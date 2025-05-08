@@ -12,7 +12,7 @@ const Home = () => {
 
   const handleLogin = () => {
     // Redirect to the backend login route to authenticate with Spotify
-    window.location.href = 'https://mixer-io.vercel.app/login';
+    window.location.href = 'https://mixer-io.vercel.app/login'; // Replace with your backend URL
   };
 
   const handleGetTopTracks = async () => {
