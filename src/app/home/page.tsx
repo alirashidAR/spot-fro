@@ -5,71 +5,99 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 const Home = () => {
-  const [accessToken, setAccessToken] = useState(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [topArtists, setTopArtists] = useState<string[]>([]);
   const [prompt, setPrompt] = useState('');
-  const [imageUrl, setImageUrl] = useState(''); // State to hold the generated image URL
+  const [imageUrl, setImageUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const BACKEND_URL = 'https://mixer-io.vercel.app/'; // Update this with your actual backend URL
 
   const handleLogin = () => {
     // Redirect to the backend login route to authenticate with Spotify
-    window.location.href = 'https://mixer-io.vercel.app/login'; // Replace with your backend URL
+    window.location.href = `${BACKEND_URL}/login`;
   };
 
   const handleGetTopTracks = async () => {
+    if (!userId) {
+      setError('User ID not found. Please login again.');
+      return;
+    }
+
+    setIsLoading(true);
     try {
-      const { data } = await axios.get('https://mixer-io.vercel.app/get_user_top_tracks', {
-        params: { access_token: accessToken },
+      const { data } = await axios.get(`${BACKEND_URL}/get_user_top_tracks`, {
+        params: { user_id: userId },
       });
-      console.log('Top Tracks:', data); // Log the response from the backend
-      setPrompt(data.prompt); // Store the generated prompt
-      setTopArtists(data.artists); // Store the artists array
+      console.log('API Response:', data);
+      
+      setPrompt(data.prompt);
+      setTopArtists(data.artists);
 
       // Generate the image based on the prompt
-      fetchImage(data.prompt); 
+      await fetchImage(data.prompt);
     } catch (error) {
       console.error('Error fetching top tracks:', error);
+      setError('Failed to fetch your top artists. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleCallback = (code: string, state: string) => {
-    // Get the access token from the backend after Spotify redirect
-    axios
-      .get(`https://mixer-io.vercel.app/callback?code=${code}&state=${state}`)
-      .then((response) => {
-        setAccessToken(response.data.access_token);
-        console.log('Access Token:', response.data.access_token);
-      })
-      .catch((error) => {
-        console.error('Error during callback:', error);
-      });
-  };
-
-  // Check for the 'code' query parameter in the URL after redirection
+  // Check for auth_success and user_id parameters in the URL after redirection
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code'); // Extract the code from the URL
-    const state = urlParams.get('state'); // Extract the state from the URL
-    console.log('Code:', code);
-    console.log('State:', state);
-    if (code && state) {
-      handleCallback(code, state); // Handle the callback and fetch the access token
+    const authSuccess = urlParams.get('auth_success');
+    const newUserId = urlParams.get('user_id');
+    const authError = urlParams.get('error');
+    
+    // Clear URL parameters to avoid sharing sensitive data
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, document.title, '/home');
+    }
+
+    if (authError) {
+      setError('Authentication failed. Please try again.');
+      return;
+    }
+    
+    if (authSuccess === 'true' && newUserId) {
+      console.log('Authentication successful. User ID:', newUserId);
+      setUserId(newUserId);
+      
+      // Fetch the access token using the user ID
+      fetchAccessToken(newUserId);
     }
   }, []);
 
-  const fetchImage = async (prompt:string, params = {}) => {
-    const defaultParams = {
+  const fetchAccessToken = async (userId: string) => {
+    try {
+      const response = await axios.post(`${BACKEND_URL}/get_access_token`, { user_id: userId });
+      setAccessToken(response.data.access_token);
+      console.log('Access token retrieved successfully');
+    } catch (error) {
+      console.error('Error fetching access token:', error);
+      setError('Failed to retrieve access token. Please login again.');
+    }
+  };
 
+  const fetchImage = async (prompt: string, params = {}) => {
+    const defaultParams = {
       quality: 80,
       format: 'png',
       nologo: true,
       private: true,
     };
+    
     const queryParams = new URLSearchParams(
       Object.entries({ ...defaultParams, ...params }).reduce((acc, [key, value]) => {
         acc[key] = String(value);
         return acc;
       }, {} as Record<string, string>)
     );
+    
     const encodedPrompt = encodeURIComponent(prompt);
     const url = `https://image.pollinations.ai/prompt/${encodedPrompt}?${queryParams.toString()}`;
 
@@ -78,25 +106,39 @@ const Home = () => {
     try {
       const response = await fetch(url);
       if (!response.ok) {
-        const errorText = await response.text(); // Get error details if possible
-        throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorText}`
-        );
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
+      
       const imageBlob = await response.blob();
       const imageUrl = URL.createObjectURL(imageBlob);
-      setImageUrl(imageUrl); // Set the image URL in state
-
+      setImageUrl(imageUrl);
       console.log("Image fetched and displayed.");
     } catch (error) {
       console.error("Error fetching image:", error);
+      setError('Failed to generate image. Please try again.');
     }
   };
 
   return (
     <div className="container mx-auto py-10 px-4">
       <h1 className="text-3xl font-bold mb-6">Spotify to Image Prompt Generator</h1>
-      {!accessToken ? (
+      
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <p>{error}</p>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="mt-2" 
+            onClick={() => setError(null)}
+          >
+            Dismiss
+          </Button>
+        </div>
+      )}
+      
+      {!userId ? (
         <Card className="w-full max-w-md mx-auto">
           <CardContent className="pt-6">
             <Button onClick={handleLogin} className="w-full">Login with Spotify</Button>
@@ -108,7 +150,14 @@ const Home = () => {
             <CardTitle>Your Spotify Top Artists</CardTitle>
           </CardHeader>
           <CardContent>
-            <Button onClick={handleGetTopTracks} className="mb-4">Get Top Artists</Button>
+            <Button 
+              onClick={handleGetTopTracks} 
+              className="mb-4"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Loading...' : 'Get Top Artists'}
+            </Button>
+            
             {topArtists.length > 0 ? (
               <ul className="space-y-2 list-disc pl-5">
                 {topArtists.map((artist, index) => (
@@ -119,12 +168,23 @@ const Home = () => {
               <p className="text-muted-foreground">No top artists found.</p>
             )}
           </CardContent>
-          <CardFooter className="flex-col items-start">
-            <h3 className="text-lg font-semibold mb-2">Generated Prompt</h3>
-            <p className="text-sm">{prompt || 'No prompt generated yet.'}</p>
-            {/* Display the generated image */}
-            {imageUrl && <img src={imageUrl} alt={prompt} className="mt-4 w-full" />}
-          </CardFooter>
+          
+          {prompt && (
+            <CardFooter className="flex-col items-start">
+              <h3 className="text-lg font-semibold mb-2">Generated Prompt</h3>
+              <p className="text-sm">{prompt}</p>
+              
+              {imageUrl && (
+                <div className="mt-4 w-full">
+                  <img 
+                    src={imageUrl} 
+                    alt="Generated from your music taste" 
+                    className="w-full rounded-md shadow-md"
+                  />
+                </div>
+              )}
+            </CardFooter>
+          )}
         </Card>
       )}
     </div>
