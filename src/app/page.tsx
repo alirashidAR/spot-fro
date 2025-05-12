@@ -130,7 +130,7 @@ export default function LoginPage() {
                 </Button>
                 
                 <div className="mt-6 text-center text-sm text-gray-500">
-                  We'll only access your top artists to create your poster
+                  We will only access your top artists to create your poster
                 </div>
               </CardContent>
             </Card>

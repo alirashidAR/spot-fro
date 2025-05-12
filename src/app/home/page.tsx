@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 import {
   Card,
   CardContent,
@@ -174,11 +175,13 @@ export default function HomePage() {
               <div className="w-full h-64 bg-gray-200 animate-pulse rounded-md mb-4" />
             ) : (
               imageUrl && (
-                <>
-                  <img
+                  <Image
                     src={imageUrl}
                     alt="Generated from your music taste"
                     className="w-full rounded-md shadow-md mb-4"
+                    width={500}
+                    height={500}
+                  />
                   />
                   <Button
                     variant="outline"
