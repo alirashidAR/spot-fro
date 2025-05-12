@@ -4,14 +4,14 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-import axios from "axios"  // Import axios
+import axios from "axios"
 
 export default function PromoPage() {
   const [email, setEmail] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")  // For error messages
-  const [success, setSuccess] = useState("")  // For success message
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
 
   const handleSubmit = async () => {
     if (!email || !email.includes("@")) {
@@ -21,27 +21,22 @@ export default function PromoPage() {
     }
 
     setLoading(true)
-    setError("")  // Reset error message on each submit
+    setError("")
 
     try {
-      const res = await axios.post("https://mixer-io.vercel.app/earlyaccess", {
-        email: email, // Send email in the request body
+      const res = await axios.post("http://127.0.0.1:5000/earlyaccess", {
+        email: email,
       })
 
       if (res.status === 200) {
-        setSuccess("You're in! Check your inbox 🎉")
+        setSuccess("You&rsquo;re in! Check your inbox 🎉")
         setSubmitted(true)
-      } else if (res.status === 403) {
-        setError("Early access is full. Please try again later.")
-      } else if (res.status === 409) {
-        setError("This email is already registered.")
-      } else if (res.status === 400 && res.data.error) {
-        setError(res.data.error)  // Handle other 400 errors
       } else {
-        setError("Error submitting email.")
+        setError(res.data.message || "Error submitting email.")
       }
-    } catch (err) {
-      setError("Something went wrong. Please try again.")
+    } catch (error) {
+      console.error("Submission error:", error) // ✅ Now using the error
+      setError("Something went wrong.")
     }
 
     setLoading(false)
@@ -55,14 +50,14 @@ export default function PromoPage() {
             🚀 Get Early Access
           </CardTitle>
           <p className="text-sm text-gray-500 mt-2">
-            A poster that combines your top artists into a single image. 
+            A poster that combines your top artists into a single image.
           </p>
         </CardHeader>
 
         <CardContent>
           {submitted ? (
             <p className="text-green-600 font-medium">
-              You're on the list! 🎉 We'll email you soon.
+              You&rsquo;re on the list! 🎉 We&rsquo;ll email you soon.
             </p>
           ) : (
             <div className="flex flex-col space-y-4">
@@ -71,9 +66,8 @@ export default function PromoPage() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                id="email"  // Added unique id for the input field
-                name="email"  // Added name attribute
-                autoComplete="email"  // Added autocomplete attribute
+                id="email"
+                name="email"
               />
               <Button onClick={handleSubmit} disabled={loading}>
                 {loading ? "Submitting..." : "Join the First 20"}
@@ -86,7 +80,7 @@ export default function PromoPage() {
         </CardContent>
 
         <CardFooter className="text-xs text-gray-400">
-          I'll never spam you.
+          I&rsquo;ll never spam you.
         </CardFooter>
       </Card>
     </div>
