@@ -24,7 +24,7 @@ export default function PromoPage() {
     setError("")
 
     try {
-      const res = await axios.post("http://127.0.0.1:5000/earlyaccess", {
+      const res = await axios.post("https://mixer-io.vercel.app/earlyaccess", {
         email: email,
       })
 
