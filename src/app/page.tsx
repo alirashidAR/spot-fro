@@ -22,27 +22,33 @@ export default function PromoPage() {
 
     setLoading(true)
     setError("")
+    setSuccess("")
 
     try {
       const res = await axios.post("https://mixer-io.vercel.app/earlyaccess", {
         email: email,
       })
 
-      if (res.status === 200) {
-        setSuccess("You&rsquo;re in! Check your inbox 🎉")
+      if (res.status === 201) {
+        setSuccess("You’re in! Check your inbox 🎉")
         setSubmitted(true)
-      }else if (res.status === 403) {
-        setSuccess("Sorry, the list is full. Dont worry, wait till we launch.")
-      }
-      else if (res.status === 409) {
-        setSuccess("You&rsquo;ve already signed up.")
-      } 
-      else {
-        setError(res.data.message || "Error submitting email.")
       }
     } catch (error) {
-      console.error("Submission error:", error) // ✅ Now using the error
-      setError("Something went wrong.")
+      console.error("Submission error:", error)
+
+      if (axios.isAxiosError(error) && error.response) {
+        const status = error.response.status
+
+        if (status === 409) {
+          setSuccess("You’ve already signed up.")
+        } else if (status === 403) {
+          setSuccess("Sorry, the list is full. Don’t worry, wait till we launch.")
+        } else {
+          setError(error.response.data?.message || "Error submitting email.")
+        }
+      } else {
+        setError("Something went wrong. Please try again later.")
+      }
     }
 
     setLoading(false)
@@ -63,7 +69,7 @@ export default function PromoPage() {
         <CardContent>
           {submitted ? (
             <p className="text-green-600 font-medium">
-              You&rsquo;re on the list! 🎉 We&rsquo;ll email you soon.
+              You’re on the list! 🎉 We’ll email you soon.
             </p>
           ) : (
             <div className="flex flex-col space-y-4">
@@ -86,7 +92,7 @@ export default function PromoPage() {
         </CardContent>
 
         <CardFooter className="text-xs text-gray-400">
-          I&rsquo;ll never spam you.
+          I’ll never spam you.
         </CardFooter>
       </Card>
     </div>
