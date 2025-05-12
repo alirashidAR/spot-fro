@@ -32,10 +32,10 @@ export default function PromoPage() {
         setSuccess("You&rsquo;re in! Check your inbox 🎉")
         setSubmitted(true)
       }else if (res.status === 403) {
-        setError("Sorry, the list is full. Dont worry, wait till we launch.")
+        setSuccess("Sorry, the list is full. Dont worry, wait till we launch.")
       }
       else if (res.status === 409) {
-        setError("You&rsquo;ve already signed up.")
+        setSuccess("You&rsquo;ve already signed up.")
       } 
       else {
         setError(res.data.message || "Error submitting email.")
