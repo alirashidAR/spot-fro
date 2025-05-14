@@ -62,7 +62,7 @@ export default function PromoPage() {
             🚀 Get Early Access
           </CardTitle>
           <p className="text-sm text-gray-500 mt-2">
-            A poster that combines your top artists into a single image.
+            Ever wondered what your music <span className="italic">looks</span> like? Get early access to try our tool and make a sick poster of your top artists.
           </p>
         </CardHeader>
 
@@ -92,7 +92,7 @@ export default function PromoPage() {
         </CardContent>
 
         <CardFooter className="text-xs text-gray-400">
-          I’ll never spam you.
+          No spam, promise.
         </CardFooter>
       </Card>
     </div>
