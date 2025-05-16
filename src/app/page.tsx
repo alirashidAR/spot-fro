@@ -59,7 +59,7 @@ export default function PromoPage() {
       <Card className="max-w-md w-full shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">
-            🚀 Get Early Access
+            🎧 Get Early Access
           </CardTitle>
           <p className="text-sm text-gray-500 mt-2">
             Ever wondered what your music <span className="italic">looks</span> like? Get early access to try our tool and make a sick poster of your top artists.
@@ -75,7 +75,7 @@ export default function PromoPage() {
             <div className="flex flex-col space-y-4">
               <Input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Enter your Spotify email (double-check before submitting!)"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 id="email"
