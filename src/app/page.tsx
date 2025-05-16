@@ -57,47 +57,51 @@ export default function PromoPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-gray-100 px-4">
-    <BackgroundBeamsWithCollision className="h-screen">
-      <Card className="max-w-md w-full shadow-lg z-30">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">
-            🎧 Early Access!?
-          </CardTitle>
-          <p className="text-sm text-gray-500 mt-2">
-            Hello ! Working on a small indie project. It let's you create a poster of your top spotify artists. Need a few people to test it out. If you wanna have a go at it, drop your email below, so that you can access it. Spotify is a bitch and allows 20 users only for testing...
-          </p>
-        </CardHeader>
-
-        <CardContent>
-          {submitted ? (
-            <p className="text-green-600 font-medium">
-              You're in! I'll email you when it's ready
+      <BackgroundBeamsWithCollision className="h-screen">
+        <Card className="max-w-md w-full shadow-lg z-30">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">
+              🎧 Early Access!?
+            </CardTitle>
+            <p className="text-sm text-gray-500 mt-2">
+              Hello! Working on a small indie project. It{"'"}s a tool that lets you create a poster of your top Spotify artists. I need a few people to test it out. If you want to try it, drop your email below so you can access it. Spotify is a bit annoying and only allows 20 users for testing...
             </p>
-          ) : (
-            <div className="flex flex-col space-y-4">
-              <Input
-                type="email"
-                placeholder="Your Spotify email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                id="email"
-                name="email"
-              />
-              <Button onClick={handleSubmit} disabled={loading} className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700">
-                {loading ? "Adding you..." : "Join the Early Few"}
-              </Button>
+          </CardHeader>
 
-              {error && <p className="text-red-600 mt-2">{error}</p>}
-              {success && <p className="text-green-600 mt-2">{success}</p>}
-            </div>
-          )}
-        </CardContent>
+          <CardContent>
+            {submitted ? (
+              <p className="text-green-600 font-medium">
+                {"You're in! I'll email you when it's ready"}
+              </p>
+            ) : (
+              <div className="flex flex-col space-y-4">
+                <Input
+                  type="email"
+                  placeholder="Your Spotify email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  id="email"
+                  name="email"
+                />
+                <Button
+                  onClick={handleSubmit}
+                  disabled={loading}
+                  className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+                >
+                  {loading ? "Adding you..." : "Join the Early Few"}
+                </Button>
 
-        <CardFooter className="text-xs text-gray-400">
-          I respect your inbox - no spam from me, promise.
-          Won't hack your spotify either.
-        </CardFooter>
-      </Card>
+                {error && <p className="text-red-600 mt-2">{error}</p>}
+                {success && <p className="text-green-600 mt-2">{success}</p>}
+              </div>
+            )}
+          </CardContent>
+
+          <CardFooter className="text-xs text-gray-400">
+            I respect your inbox — no spam from me, promise.{" "}
+            {"Won't hack your Spotify either."}
+          </CardFooter>
+        </Card>
       </BackgroundBeamsWithCollision>
     </div>
   )
