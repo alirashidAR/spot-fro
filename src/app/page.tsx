@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import axios from "axios"
 
 export default function PromoPage() {
@@ -56,7 +57,8 @@ export default function PromoPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-gray-100 px-4">
-      <Card className="max-w-md w-full shadow-lg">
+    <BackgroundBeamsWithCollision className="h-screen">
+      <Card className="max-w-md w-full shadow-lg z-30">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">
             🎧 Get Early Access
@@ -75,7 +77,7 @@ export default function PromoPage() {
             <div className="flex flex-col space-y-4">
               <Input
                 type="email"
-                placeholder="Enter your Spotify email (double-check before submitting!)"
+                placeholder="Enter your Spotify email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 id="email"
@@ -95,6 +97,7 @@ export default function PromoPage() {
           No spam, promise.
         </CardFooter>
       </Card>
+      </BackgroundBeamsWithCollision>
     </div>
   )
 }

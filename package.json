@@ -10,14 +10,16 @@
   "dependencies": {
     "@deemlol/next-icons": "^0.1.9",
     "@radix-ui/react-slot": "^1.2.0",
+    "@tabler/icons-react": "^3.33.0",
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "motion": "^12.12.1",
     "next": "15.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sonner": "^2.0.3",
-    "tailwind-merge": "^3.2.0"
+    "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
