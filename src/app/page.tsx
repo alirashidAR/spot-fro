@@ -65,7 +65,7 @@ export default function PromoPage() {
             </CardTitle>
             <p className="text-sm text-gray-500 mt-2">
              working on something that turns your top Spotify artists into a custom poster. Just messing around for now — Spotify only lets 25 people test it, so putting it here. 
-              Drop your Spotify email if you wanna try it out. I{"’"}ll choose the any 25 and send you a mail to access it.
+              Drop your Spotify email if you wanna try it out. I{"’"}ll choose any 25 and send you an email with access.
             </p>
           </CardHeader>
 
