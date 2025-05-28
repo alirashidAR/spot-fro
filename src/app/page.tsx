@@ -61,10 +61,10 @@ export default function PromoPage() {
         <Card className="max-w-md w-full shadow-lg z-30">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">
-              🎧 Early Access!?
+              🎵helo🎨
             </CardTitle>
             <p className="text-sm text-gray-500 mt-2">
-              Hello! Working on a small indie project. It{"'"}s a tool that lets you create a poster of your top Spotify artists. I need a few people to test it out. If you want to try it, drop your email below so you can access it. Spotify is a bit annoying and only allows 20 users for testing...
+             Working on a small indie project that generates a custom poster of your top artists. Need a few people to test it out, if you want to try it, drop your Spotify email and I'll give you access to it. Spotify's a bit annoying and only allows 25 users for testing...
             </p>
           </CardHeader>
 
@@ -98,7 +98,7 @@ export default function PromoPage() {
           </CardContent>
 
           <CardFooter className="text-xs text-gray-400">
-            I respect your inbox — no spam from me, promise.{" "}
+            no spam from me, promise.{" "}
             {"Won't hack your Spotify either."}
           </CardFooter>
         </Card>
