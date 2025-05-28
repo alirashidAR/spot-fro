@@ -89,7 +89,7 @@ export default function PromoPage() {
                   disabled={loading}
                   className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
                 >
-                  {loading ? "Adding you..." : "I'm down 🙌"}
+                  {loading ? "Adding you..." : "Submit"}
                 </Button>
 
                 {error && <p className="text-red-600 mt-2">{error}</p>}
