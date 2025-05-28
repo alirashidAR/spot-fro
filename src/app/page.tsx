@@ -64,7 +64,7 @@ export default function PromoPage() {
               🎵helo🎨
             </CardTitle>
             <p className="text-sm text-gray-500 mt-2">
-             Working on a small indie project that generates a custom poster of your top artists. Need a few people to test it out, if you want to try it, drop your Spotify email and I'll give you access to it. Spotify's a bit annoying and only allows 25 users for testing...
+             Working on a small indie project that generates a custom poster of your top artists. Need a few people to test it out, if you want to try it, drop your Spotify email and I{"'"}ll give you access to it. Spotify{"'"}s a bit annoying and only allows 25 users for testing...
             </p>
           </CardHeader>
 
