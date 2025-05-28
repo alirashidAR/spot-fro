@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision"
 import axios from "axios"
 
 export default function PromoPage() {
@@ -31,7 +31,7 @@ export default function PromoPage() {
       })
 
       if (res.status === 201) {
-        setSuccess("You're in! I'll send you an email soon ✨")
+        setSuccess("You’re on the list! If I pick you, you’ll get a DM or email from me soon 👀")
         setSubmitted(true)
       }
     } catch (error) {
@@ -41,9 +41,9 @@ export default function PromoPage() {
         const status = error.response.status
 
         if (status === 409) {
-          setSuccess("You're already signed up! I'll be in touch soon.")
+          setSuccess("You already signed up! If you’re in the 25, you’ll hear from me ✨")
         } else if (status === 403) {
-          setSuccess("My early access list is currently full. I'll let you know when I launch!")
+          setSuccess("I hit the 25-person Spotify test limit for now — but I’ll ping you if that changes!")
         } else {
           setError(error.response.data?.message || "Something didn't work right. Mind trying again?")
         }
@@ -61,17 +61,18 @@ export default function PromoPage() {
         <Card className="max-w-md w-full shadow-lg z-30">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">
-              🎵helo🎨
+              🎵hello🎨
             </CardTitle>
             <p className="text-sm text-gray-500 mt-2">
-             Working on a small indie project that generates a custom poster of your top artists. Need a few people to test it out, if you want to try it, drop your Spotify email and I{"'"}ll give you access to it. Spotify{"'"}s a bit annoying and only allows 25 users for testing...
+             working on something that turns your top Spotify artists into a custom poster. Just messing around for now — Spotify only lets 25 people test it, so putting it here. 
+              Drop your Spotify email if you wanna try it out. I{"’"}ll choose the any 25 and send you a mail to access it.
             </p>
           </CardHeader>
 
           <CardContent>
             {submitted ? (
               <p className="text-green-600 font-medium">
-                {"You're in! I'll email you when it's ready"}
+                You’re on the list!
               </p>
             ) : (
               <div className="flex flex-col space-y-4">
@@ -88,7 +89,7 @@ export default function PromoPage() {
                   disabled={loading}
                   className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
                 >
-                  {loading ? "Adding you..." : "Join the Early Few"}
+                  {loading ? "Adding you..." : "I'm down 🙌"}
                 </Button>
 
                 {error && <p className="text-red-600 mt-2">{error}</p>}
@@ -98,8 +99,7 @@ export default function PromoPage() {
           </CardContent>
 
           <CardFooter className="text-xs text-gray-400">
-            no spam from me, promise.{" "}
-            {"Won't hack your Spotify either."}
+            no spam from me, promise. Won{"'"}t hack your Spotify either.
           </CardFooter>
         </Card>
       </BackgroundBeamsWithCollision>
