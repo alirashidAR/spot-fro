@@ -50,7 +50,7 @@ export default function LoginPage() {
               Your Artists, <br/>Your Poster.
             </h2>
             <p className="text-lg text-white/90 mb-6 leading-relaxed">
-              Create unique AI-generated artwork combining your top 2 Spotify artists into one stunning visual masterpiece.
+              Create unique AI-generated artwork combining your top  Spotify artists into one stunning visual masterpiece.
             </p>
             <div className="mt-8 space-y-4">
               <div className="flex items-center gap-3">
@@ -107,7 +107,7 @@ export default function LoginPage() {
                   </svg>
                 </div>
               </div>
-              <h1 className="text-4xl font-bold text-gray-800 mb-2">ArtistFusion</h1>
+              <h1 className="text-4xl font-bold text-gray-800 mb-2">Splush</h1>
               <p className="text-gray-500">
                 Create your AI-generated artist poster
               </p>

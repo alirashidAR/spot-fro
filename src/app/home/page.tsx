@@ -20,9 +20,7 @@ export default function HomePage() {
     setClientReady(true);
   }, []);
 
-  if (!clientReady) {
-    return null; // You can also render a loading spinner here
-  }
+  if (!clientReady) return null;
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -41,6 +39,8 @@ function SearchParamsComponent() {
   const [isLoading, setIsLoading] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showImage, setShowImage] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const BACKEND_URL = 'https://mixer-io.vercel.app';
 
@@ -64,6 +64,7 @@ function SearchParamsComponent() {
   useEffect(() => {
     if (accessToken) {
       localStorage.setItem('access_token', accessToken);
+      autoGetTopTracks();
     }
   }, [accessToken]);
 
@@ -79,11 +80,8 @@ function SearchParamsComponent() {
     }
   };
 
-  const handleGetTopTracks = async () => {
-    if (!userId) {
-      setError('User ID not found. Please login again.');
-      return;
-    }
+  const autoGetTopTracks = async () => {
+    if (!userId) return;
 
     setIsLoading(true);
     try {
@@ -91,7 +89,10 @@ function SearchParamsComponent() {
         params: { user_id: userId },
       });
 
-      setPrompt(data.prompt);
+      const prompt = data.prompt;
+      const lastColonIndex = prompt.lastIndexOf(':');
+      const formattedPrompt = lastColonIndex !== -1 ? prompt.slice(0, lastColonIndex).trim() : prompt.trim();
+      setPrompt(formattedPrompt);
       setTopArtists(data.artists);
       await fetchImage(data.prompt);
     } catch (error) {
@@ -104,7 +105,7 @@ function SearchParamsComponent() {
 
   const fetchImage = async (prompt: string, params = {}) => {
     const defaultParams = {
-      model:"flux",
+      model: 'flux',
       format: 'png',
       nologo: true,
       private: true,
@@ -122,6 +123,7 @@ function SearchParamsComponent() {
 
     try {
       setIsImageLoading(true);
+      setShowImage(false);
       const response = await fetch(url);
       if (!response.ok) {
         const errorText = await response.text();
@@ -131,8 +133,13 @@ function SearchParamsComponent() {
       const imageBlob = await response.blob();
       const imageUrl = URL.createObjectURL(imageBlob);
       setImageUrl(imageUrl);
+
+      // Delay showing image to create engagement
+      setTimeout(() => {
+        setShowImage(true);
+      }, 1500);
     } catch (error) {
-      console.error("Error fetching image:", error);
+      console.error('Error fetching image:', error);
       setError('Failed to generate image. Please try again.');
     } finally {
       setIsImageLoading(false);
@@ -140,8 +147,10 @@ function SearchParamsComponent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 py-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">Spotify to Image Prompt Generator</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex flex-col items-center justify-center px-4 py-10">
+      <h1 className="text-4xl font-extrabold mb-6 text-center text-gray-800 tracking-tight">
+        🎵 Your Spotify Sound in a Picture
+      </h1>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 max-w-xl w-full">
@@ -152,52 +161,43 @@ function SearchParamsComponent() {
         </div>
       )}
 
-      <Card className="w-full max-w-2xl">
+      <Card className="w-full max-w-2xl shadow-xl border-none bg-white/70 backdrop-blur">
         <CardHeader>
-          <CardTitle>Your Spotify Top Artists</CardTitle>
+          <CardTitle className="text-lg font-semibold text-gray-900">Your Spotify Top Artists</CardTitle>
         </CardHeader>
 
         <CardContent>
-          <Button
-            onClick={handleGetTopTracks}
-            className="mb-4"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin" />
-                <span>Loading...</span>
-              </div>
-            ) : (
-              'Get Top Artists'
-            )}
-          </Button>
-
-          {topArtists.length > 0 ? (
-            <ul className="space-y-2 list-disc pl-5 text-sm">
-              {topArtists.map((artist, index) => (
+          {isLoading ? (
+            <div className="flex justify-center items-center mb-4">
+              <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : (
+            <ul className="space-y-1 text-base text-gray-800 pl-4 list-disc mb-4">
+              {topArtists.slice(0, 2).map((artist, index) => (
                 <li key={index}>{artist}</li>
               ))}
             </ul>
-          ) : (
-            <p className="text-muted-foreground">No top artists found yet.</p>
           )}
         </CardContent>
 
         {prompt && (
-          <CardFooter className="flex-col items-start">
-            <h3 className="text-lg font-semibold mb-2">Generated Prompt</h3>
-            <p className="text-sm mb-4">{prompt}</p>
+          <CardFooter className="flex flex-col items-start gap-4">
+            <Button variant="outline" onClick={() => setShowModal(true)}>
+              Show Persona
+            </Button>
 
             {isImageLoading ? (
-              <div className="w-full h-64 bg-gray-200 animate-pulse rounded-md mb-4" />
+              <div className="w-full h-64 bg-gray-200 animate-pulse rounded-lg" />
             ) : (
+              showImage &&
               imageUrl && (
-                <>
+                <div className="flex flex-col items-center w-full gap-3">
                   <Image
+                    width={500}
+                    height={500}
                     src={imageUrl}
                     alt="Generated from your music taste"
-                    className="w-full h-auto rounded-md shadow-md mb-4"
+                    className="rounded-lg shadow-lg transition-opacity duration-1000 ease-in opacity-100"
                   />
                   <Button
                     variant="outline"
@@ -210,12 +210,26 @@ function SearchParamsComponent() {
                   >
                     Download Image
                   </Button>
-                </>
+                </div>
               )
             )}
           </CardFooter>
         )}
       </Card>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+            <h2 className="text-xl font-bold mb-4">Splush Persona</h2>
+            <p className="text-gray-700 text-sm whitespace-pre-line">{prompt}</p>
+            <div className="mt-4 flex justify-end">
+              <Button variant="outline" onClick={() => setShowModal(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
